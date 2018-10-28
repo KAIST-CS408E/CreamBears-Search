@@ -4,10 +4,10 @@ Add `MySearcher.java` under `src/main/java/services/xis/search/searcher`:
 ```java
 package services.xis.search.searcher;
 
-public class NaiveContentSearcher extends Searcher {
+public class MySearcher extends Searcher {
     private String index, typ;
 
-    public NaiveContentSearcher(
+    public MySearcher(
         String host, Integer port0, Integer port1,
         String protocol, String index, String typ
     ) {
@@ -26,7 +26,7 @@ Add `MySearcher.scala` under `src/main/scala/services/xis/search/searcher`:
 ```scala
 package services.xis.search.searcher
 
-class NaiveTitleSearcher(
+class MySearcher(
   host: String,
   port0: java.lang.Integer,
   port1: java.lang.Integer,
