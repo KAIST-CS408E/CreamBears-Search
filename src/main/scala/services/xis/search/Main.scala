@@ -8,10 +8,10 @@ object Main {
     "localhost",
     new Integer(9200),
     new Integer(9300),
-    "http",
-    "portal2",
-    "article"
+    "http"
   )
+  private val index = "portal2"
+  private val typ = "article"
 
   def main(args: Array[String]): Unit = args.toList match {
     case name :: key :: Nil =>
@@ -22,7 +22,7 @@ object Main {
          .asInstanceOf[Class[Searcher]]
        val cons = c.getConstructor(params.map(_.getClass): _*)
        val searcher = cons.newInstance(params: _*)
-       searcher.search(key)
+       searcher.printSearch(index, typ, key)
        searcher.close()
      } catch {
        case _: ClassNotFoundException => println("Class not found")

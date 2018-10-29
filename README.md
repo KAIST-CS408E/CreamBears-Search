@@ -4,19 +4,15 @@ Add `MySearcher.java` under `src/main/java/services/xis/search/searcher`:
 ```java
 package services.xis.search.searcher;
 
-public class MySearcher extends Searcher {
-    private String index, typ;
-
-    public MySearcher(
-        String host, Integer port0, Integer port1,
-        String protocol, String index, String typ
+public class NaiveContentSearcher extends Searcher {
+    public NaiveContentSearcher(
+        String host, Integer port0, Integer port1, String protocol
     ) {
         super(host, port0, port1, protocol);
-        this.index = index;
-        this.typ = typ;
     }
 
-    public void search(String key) {
+    public SearchResponse search(String index, String typ, String key)
+        throws IOException {
         // implementation
     }
 }
@@ -30,13 +26,11 @@ class MySearcher(
   host: String,
   port0: java.lang.Integer,
   port1: java.lang.Integer,
-  protocol: String,
-  index: String,
-  typ: String
+  protocol: String
 ) extends Searcher(
   host, port0, port1, protocol
 ) {
-  def search(key: String): Unit = {
+  def search(index: String, typ: String, key: String): SearchResponse = {
     // implementation
   }
 }
