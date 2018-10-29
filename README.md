@@ -4,6 +4,27 @@ Add `MySearcher.java` under `src/main/java/services/xis/search/searcher`:
 ```java
 package services.xis.search.searcher;
 
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+
+public class NaiveContentSearcher extends GenBuilderSearcher {
+    public NaiveContentSearcher(
+        String host, Integer port0, Integer port1, String protocol
+    ) {
+        super(host, port0, port1, protocol);
+    }
+
+    public SearchSourceBuilder builder(String key) {
+        // implementation
+    }
+}
+```
+For more customization, extends `Searcher` directly:
+```java
+package services.xis.search.searcher;
+
+import java.io.IOException;
+import org.elasticsearch.action.search.SearchResponse;
+
 public class NaiveContentSearcher extends Searcher {
     public NaiveContentSearcher(
         String host, Integer port0, Integer port1, String protocol
@@ -21,6 +42,27 @@ public class NaiveContentSearcher extends Searcher {
 Add `MySearcher.scala` under `src/main/scala/services/xis/search/searcher`:
 ```scala
 package services.xis.search.searcher
+
+import org.elasticsearch.search.builder.SearchSourceBuilder
+
+class NaiveTitleSearcher(
+  host: String,
+  port0: java.lang.Integer,
+  port1: java.lang.Integer,
+  protocol: String
+) extends GenBuilderSearcher(
+  host, port0, port1, protocol
+) {
+  def builder(key: String): SearchSourceBuilder = {
+    // implementation
+  }
+}
+```
+For more customization, extends `Searcher` directly:
+```scala
+package services.xis.search.searcher
+
+import org.elasticsearch.action.search.SearchResponse
 
 class MySearcher(
   host: String,
