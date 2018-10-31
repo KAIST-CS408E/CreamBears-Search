@@ -4,6 +4,8 @@ import org.elasticsearch.client.RequestOptions
 import org.elasticsearch.action.get.GetRequest
 import org.elasticsearch.action.search.SearchResponse
 
+import services.xis.search.SearchFormatter
+
 class Getter(
   host: String,
   port0: java.lang.Integer,
@@ -16,8 +18,10 @@ class Getter(
   def search(index: String, typ: String, id: String): SearchResponse =
     throw ShouldNotBeCalledException
 
-  override def printSearch(index: String, typ: String, id: String): Unit = {
+  override def searchAsString(
+    formatter: SearchFormatter, index: String, typ: String, id: String
+  ): Either[String, String] = {
     val request = new GetRequest(index, typ, id)
-    println(client.get(request, RequestOptions.DEFAULT))
+    Right(client.get(request, RequestOptions.DEFAULT).toString)
   }
 }
