@@ -6,8 +6,8 @@ package services.xis.search.searcher;
 
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-public class NaiveContentSearcher extends GenBuilderSearcher {
-    public NaiveContentSearcher(
+public class MySearcher extends GenBuilderSearcher {
+    public MySearcher(
         String host, Integer port0, Integer port1, String protocol
     ) {
         super(host, port0, port1, protocol);
@@ -25,8 +25,8 @@ package services.xis.search.searcher;
 import java.io.IOException;
 import org.elasticsearch.action.search.SearchResponse;
 
-public class NaiveContentSearcher extends Searcher {
-    public NaiveContentSearcher(
+public class MySearcher extends Searcher {
+    public MySearcher(
         String host, Integer port0, Integer port1, String protocol
     ) {
         super(host, port0, port1, protocol);
@@ -45,7 +45,7 @@ package services.xis.search.searcher
 
 import org.elasticsearch.search.builder.SearchSourceBuilder
 
-class NaiveTitleSearcher(
+class MySearcher(
   host: String,
   port0: java.lang.Integer,
   port1: java.lang.Integer,
@@ -78,8 +78,35 @@ class MySearcher(
 }
 ```
 ## How to run
+* Provice a class name and a search keyword as command line arguments.
+* If a file name is given, then the `stdout` will be redirected to the file.
 ```shell
 $ sbt
 sbt:xis-search> run [class] [keyword]
+sbt:xis-search> run [class] [keyword] [file]
 sbt:xis-search> run MySearcher "수강 신청"
+sbt:xis-search> run MySearcher "수강 신청" log
 ```
+* You can customize output by making the `format` file.
+* If the `format` file does not exist, then the default format is applied:
+```
+\N(\S). portal.kaist.ac.kr/ennotice/\B/\I
+[\T](\t)
+Content: \c80
+Image: \i80
+Attach: \a80
+```
+### Formatting guideline
+* `\\` -> `\`
+* `\N` -> `[rank]`
+* `\S` -> `[score]`
+* `\I` -> `[id]`
+* `\B` -> `[board]`
+* `\T` -> `[title]`
+* `\A` -> `[author]`
+* `\d` -> `[department]`
+* `\t` -> `[time]`
+* `\h` -> `[hits]`
+* `\c` -> `[content]`
+* `\a` -> `[attached]`
+* `\i` -> `[image]`

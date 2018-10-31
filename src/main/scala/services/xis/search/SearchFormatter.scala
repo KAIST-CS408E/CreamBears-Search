@@ -37,6 +37,7 @@ class SearchFormatter(_format: String) {
         'I' -> h.getId,
         'B' -> get("board"),
         'T' -> get("title"),
+        'A' -> get("author"),
         'd' -> get("department"),
         't' -> get("time"),
         'h' -> get("hits"),
@@ -91,8 +92,8 @@ object SearchFormatter {
   val default = new SearchFormatter(
 """\N(\S). portal.kaist.ac.kr/ennotice/\B/\I
 [\T](\t)
-Content: \c100
-Image: \i100
-Attach: \a100
+Content: \c80
+Image: \i80
+Attach: \a80
 """)
 }
