@@ -40,7 +40,9 @@ object Main {
          case Right(res) =>
            fileOpt match {
              case file :: Nil =>
-               Console.withOut(new FileOutputStream(file)) { println(res) }
+               val out = new FileOutputStream(file)
+               Console.withOut(out) { println(res) }
+               out.close()
              case _ => println(res)
            }
          case Left(err) =>

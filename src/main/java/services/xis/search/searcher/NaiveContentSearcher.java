@@ -1,7 +1,7 @@
 package services.xis.search.searcher;
 
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 public class NaiveContentSearcher extends GenBuilderSearcher {
     public NaiveContentSearcher(
@@ -10,8 +10,7 @@ public class NaiveContentSearcher extends GenBuilderSearcher {
         super(host, port0, port1, protocol);
     }
 
-    public SearchSourceBuilder builder(String key) {
-        return (new SearchSourceBuilder())
-            .query(QueryBuilders.matchQuery("content", key));
+    public QueryBuilder builder(String key) {
+        return QueryBuilders.matchQuery("content", key);
     }
 }

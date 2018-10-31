@@ -4,7 +4,7 @@ Add `MySearcher.java` under `src/main/java/services/xis/search/searcher`:
 ```java
 package services.xis.search.searcher;
 
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 
 public class MySearcher extends GenBuilderSearcher {
     public MySearcher(
@@ -13,7 +13,7 @@ public class MySearcher extends GenBuilderSearcher {
         super(host, port0, port1, protocol);
     }
 
-    public SearchSourceBuilder builder(String key) {
+    public QueryBuilder builder(String key) {
         // implementation
     }
 }
@@ -43,7 +43,7 @@ Add `MySearcher.scala` under `src/main/scala/services/xis/search/searcher`:
 ```scala
 package services.xis.search.searcher
 
-import org.elasticsearch.search.builder.SearchSourceBuilder
+import org.elasticsearch.index.query.QueryBuilder
 
 class MySearcher(
   host: String,
@@ -53,7 +53,7 @@ class MySearcher(
 ) extends GenBuilderSearcher(
   host, port0, port1, protocol
 ) {
-  def builder(key: String): SearchSourceBuilder = {
+  def builder(key: String): QueryBuilder = {
     // implementation
   }
 }
@@ -100,6 +100,7 @@ Attach: \a80
 * `\\` -> `\`
 * `\N` -> `[rank]`
 * `\S` -> `[score]`
+* `\E` -> `[explanation]`
 * `\I` -> `[id]`
 * `\B` -> `[board]`
 * `\T` -> `[title]`
@@ -110,3 +111,4 @@ Attach: \a80
 * `\c` -> `[content]`
 * `\a` -> `[attached]`
 * `\i` -> `[image]`
+* `\[char][int]` -> `[value].substring(0, [int])`

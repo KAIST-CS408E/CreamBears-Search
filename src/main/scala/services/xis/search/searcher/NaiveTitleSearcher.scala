@@ -1,7 +1,6 @@
 package services.xis.search.searcher
 
-import org.elasticsearch.index.query.QueryBuilders
-import org.elasticsearch.search.builder.SearchSourceBuilder
+import org.elasticsearch.index.query.{QueryBuilder, QueryBuilders}
 
 class NaiveTitleSearcher(
   host: String,
@@ -11,7 +10,6 @@ class NaiveTitleSearcher(
 ) extends GenBuilderSearcher(
   host, port0, port1, protocol
 ) {
-  def builder(key: String): SearchSourceBuilder =
-    (new SearchSourceBuilder())
-      .query(QueryBuilders.matchQuery("title", key))
+  def builder(key: String): QueryBuilder =
+    QueryBuilders.matchQuery("title", key)
 }

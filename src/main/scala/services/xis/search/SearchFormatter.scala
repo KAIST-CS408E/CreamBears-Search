@@ -34,6 +34,7 @@ class SearchFormatter(_format: String) {
         '\\' -> "\\",
         'N' -> (ind + 1).toString,
         'S' -> h.getScore.toString,
+        'E' -> h.getExplanation.toString,
         'I' -> h.getId,
         'B' -> get("board"),
         'T' -> get("title"),
@@ -95,5 +96,6 @@ object SearchFormatter {
 Content: \c80
 Image: \i80
 Attach: \a80
+\E
 """)
 }
