@@ -11,8 +11,8 @@ import services.xis.search.SearchFormatter
 
 abstract class Searcher(
   host: String,
-  port0: Int,
-  port1: Int,
+  port0: java.lang.Integer,
+  port1: java.lang.Integer,
   protocol: String
 ) {
   val client: RestHighLevelClient = 

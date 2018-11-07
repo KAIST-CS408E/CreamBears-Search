@@ -14,7 +14,7 @@ object Main {
     new Integer(9300),
     "http"
   )
-  private val index = "portal2"
+  private val index = "portal3"
   private val typ = "article"
 
   def main(args: Array[String]): Unit = args.toList match {
@@ -33,8 +33,14 @@ object Main {
            case _: IOException => SearchFormatter.default
          }
        val searcher = cons.newInstance(params: _*)
-       val res = searcher.searchAsString(formatter, index, typ, key)
-       searcher.close()
+       val res = 
+         try {
+           searcher.searchAsString(formatter, index, typ, key)
+         } catch {
+           case e: Exception => Left(e.getMessage)
+         } finally {
+           searcher.close()
+         }
 
        res match {
          case Right(res) =>

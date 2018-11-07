@@ -10,4 +10,6 @@ project/plugins/project/
 .history
 .cache
 .lib/
-*.swp
+*.sw[po]
+log*
+format
