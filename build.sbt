@@ -1,6 +1,7 @@
 import Dependencies._
 
 lazy val root = (project in file(".")).
+  dependsOn(crawler).
   settings(
     inThisBuild(List(
       organization := "services.xis.search",
