@@ -10,7 +10,7 @@ import services.xis.search.SearchFormatter
 
 import services.xis.crawl.ConnectUtil.Cookie
 import services.xis.crawl.LoginUtil.login
-import services.xis.crawl.SearchUtil
+import services.xis.crawl.{SearchUtil, SearchResult}
 
 class PortalSearcher(
   host: String,
@@ -24,16 +24,30 @@ class PortalSearcher(
   def search(index: String, typ: String, key: String): SearchResponse =
     throw ShouldNotBeCalledException
 
-  override def searchAsString(
-    formatter: SearchFormatter, index: String, typ: String, key: String
-  ): Either[String, String] = {
+  private def _search(key: String): Stream[SearchResult] = {
     implicit val cookie: Cookie = MMap()
     lazy val pages: Stream[Int] = 1 #:: pages.map(_ + 1)
     login
-    val res = pages
+    pages
       .map(SearchUtil.search(key, _))
       .takeWhile(_.nonEmpty)
       .flatten
+  }
+
+  override def scrollSearchAsIds(
+    index: String, typ: String, key: String
+  ): List[String] = searchAsIds(index, typ, key)
+
+  override def searchAsIds(
+    index: String, typ: String, key: String
+  ): List[String] = {
+    _search(key).map(_.id).toList
+  }
+
+  override def searchAsString(
+    formatter: SearchFormatter, index: String, typ: String, key: String
+  ): Either[String, String] = {
+    val res = _search(key)
     Right(s"${res.mkString("\n")}\n${res.length}")
   }
 }

@@ -19,10 +19,11 @@ abstract class GenBuilderSearcher(
       .types(typ)
       .source(
         new SearchSourceBuilder()
-          .size(30)
+          .size(50)
           .explain(true)
           .query(builder(key))
       )
+      .scroll("60m")
     client.search(request, RequestOptions.DEFAULT)
   }
   def builder(key: String): QueryBuilder
