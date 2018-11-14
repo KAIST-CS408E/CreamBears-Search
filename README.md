@@ -82,10 +82,10 @@ class MySearcher(
 * If a file name is given, then the `stdout` will be redirected to the file.
 ```shell
 $ sbt
-sbt:xis-search> run [class] [keyword]
-sbt:xis-search> run [class] [keyword] [file]
-sbt:xis-search> run MySearcher "수강 신청"
-sbt:xis-search> run MySearcher "수강 신청" log
+sbt:xis-search> run [index] [class] [keyword]
+sbt:xis-search> run [index] [class] [keyword] [file]
+sbt:xis-search> run portal MySearcher "수강 신청"
+sbt:xis-search> run portal MySearcher "수강 신청" log
 ```
 * You can customize output by making the `format` file.
 * If the `format` file does not exist, then the default format is applied:
