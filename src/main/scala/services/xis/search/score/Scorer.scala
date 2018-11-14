@@ -7,13 +7,19 @@ class Scorer(name: String) {
     {
       def getId(url: String): String = {
         val i = url.lastIndexOf("/")
-        url.substring(i + 1)
+        url.substring(i + 1).filter(_.isDigit)
       }
       val data = Source.fromFile(name).mkString.split("\n").map(_.split(","))
       val keywords = data.head.init
       val articles = data.tail
-      val relevants = (0 until keywords.length)
-        .map(i => i -> articles.filter(_(i) == "O").map(a => getId(a.last)).toSet)
+      val relevants =
+        (0 until keywords.length)
+          .map(i => i -> (
+            articles
+              .filter(a => a(i).nonEmpty && a(i).last == 'O')
+              .map(a => getId(a.last))
+              .toSet
+          ))
       val keyToRel = relevants.map{ case (i, s) => keywords(i) -> s }
       (keywords.toSet, keyToRel.toMap)
     }

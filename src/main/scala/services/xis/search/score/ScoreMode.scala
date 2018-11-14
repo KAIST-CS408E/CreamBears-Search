@@ -68,7 +68,7 @@ case object AveragePrecision extends ScoreMode {
     if (rel.isEmpty) {
       if (res.isEmpty) 1 else 0
     } else
-      (for (k <- 1 to res.length)
+      (for (k <- 1 to (rel.size min res.size))
          yield (
            if (rel(res(k - 1)))
              PrecisionAt(k).score1(res, ress, rel)
@@ -86,7 +86,7 @@ case object NormalizedDiscountedCumulativeGain extends ScoreMode {
     res: List[String], ress: Set[String], rel: Set[String]
   ): Double = {
     val dcg =
-      (for (k <- 1 to res.length)
+      (for (k <- 1 to (rel.size min res.size))
          yield (if (rel(res(k - 1))) 1 / log2(k + 1) else 0)).sum
     val idcg = 
       (for (k <- 1 to rel.size) yield (1 / log2(k + 1))).sum
@@ -101,7 +101,7 @@ case object ReciprocalRank extends ScoreMode {
     res: List[String], ress: Set[String], rel: Set[String]
   ): Double = {
     val ind = res.indexWhere(rel(_), 0)
-    if (ind == -1) 0 else 1.0 / ind
+    if (ind == -1) 0 else 1.0 / (ind + 1)
   }
 }
 

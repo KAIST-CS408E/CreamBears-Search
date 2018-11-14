@@ -24,14 +24,26 @@ class PortalSearcher(
   def search(index: String, typ: String, key: String): SearchResponse =
     throw ShouldNotBeCalledException
 
+  private val boards = Set("it_newsletter", "notice", "International",
+    "international_opportunities", "computer_network", "influenza_a_h1n1",
+    "rnd_notices", "manuals_forms", "seminar_events", "student_notice",
+    "lecture_academic_paper", "leadership_intern_counseling",
+    "dormitory_notice", "dormitory_scholarship_welfare",
+    "parttime_scholarship", "academic_courses", "recruiting",
+    "gsc_usc_notice", "student_club", "researcher_on_military_duty",
+    "classified", "work_notice", "today_notice")
+  private val start = "20180801"
+  private val end = "20181031"
+
   private def _search(key: String): Stream[SearchResult] = {
     implicit val cookie: Cookie = MMap()
     lazy val pages: Stream[Int] = 1 #:: pages.map(_ + 1)
     login
     pages
-      .map(SearchUtil.search(key, _))
+      .map(SearchUtil.search(key, start, end, _))
       .takeWhile(_.nonEmpty)
       .flatten
+      .filter(a => boards(a.board))
   }
 
   override def searchAsIds(
@@ -45,6 +57,9 @@ class PortalSearcher(
     index: String, typ: String, key: String
   ): Either[String, String] = {
     val res = _search(key)
-    Right(s"${res.mkString("\n")}\n${res.length}")
+    val str = res.zipWithIndex.map{ case (a, i) =>
+      s"${i + 1}. ${a.title}\tportal.kaist.ac.kr/ennotice/${a.board}/${a.id}"
+    }.mkString("\n")
+    Right(str)
   }
 }
