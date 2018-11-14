@@ -14,11 +14,10 @@ object Main {
     new Integer(9300),
     "http"
   )
-  private val index = "portal3"
   private val typ = "article"
 
   def main(args: Array[String]): Unit = args.toList match {
-    case name :: key :: fileOpt =>
+    case index :: name :: key :: fileOpt =>
      try {
        val packageName = this.getClass.getPackage.getName
        val subPackageName = "searcher"
@@ -35,7 +34,7 @@ object Main {
        val searcher = cons.newInstance(params: _*)
        val res = 
          try {
-           searcher.searchAsString(formatter, index, typ, key)
+           searcher.searchAsString(formatter, false, index, typ, key)
          } catch {
            case e: Exception => Left(e.getMessage)
          } finally {
@@ -57,6 +56,6 @@ object Main {
      } catch {
        case _: ClassNotFoundException => println("Class not found")
      }
-    case _ => println("Usage: run [class] [keyword]")
+    case _ => println("Usage: run [index] [class] [keyword]")
   }
 }
