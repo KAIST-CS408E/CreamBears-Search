@@ -26,17 +26,14 @@ class SearchFormatter(_format: String) {
             Right(s"$res\n${t.map(parseAndFill(_).merge).mkString("\n")}")
         }
       case Nil => 
-        Right("No result")
+        Left("No result")
     }
   }
 
   private val format = _format.toList
 
   private def rawParseAndFill(p: (SearchHit, Int)): Option[String] =
-    parseAndFill(p) match {
-      case Right(res) => Some(res)
-      case _ => None
-    }
+    parseAndFill(p).toOption
 
   private def parseAndFill(p: (SearchHit, Int)): Either[Char, String] =
     p match {

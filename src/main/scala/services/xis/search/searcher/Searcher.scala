@@ -23,34 +23,40 @@ abstract class Searcher(
 
   def close(): Unit = client.close()
 
-  def scrollSearchAsIds(
-    index: String, typ: String, key: String
-  ): List[String] = {
+  private def scrollResponse(response: SearchResponse): Stream[SearchResponse] = {
     lazy val responses: Stream[SearchResponse] =
-      search(index, typ, key) #::
+      response #::
         responses.map(r => {
           val request = new SearchScrollRequest(r.getScrollId).scroll("30s")
           client.scroll(request, RequestOptions.DEFAULT)
         })
     responses
+  }
+
+  def searchAsString(
+    formatter: SearchFormatter, scroll: Boolean,
+    index: String, typ: String, key: String
+  ): Either[String, String] = {
+    val response = search(index, typ, key)
+    val responses = if (scroll) scrollResponse(response) else Stream(response)
+    val formatted = responses.map(formatter.formatResponse)
+    formatted.head match {
+      case l: Left[_, _] => l
+      case _ =>
+        Right(formatted.takeWhile(_.isRight).map(_.merge).mkString("\n"))
+    }
+  }
+
+  def searchAsIds(
+    scroll: Boolean, index: String, typ: String, key: String
+  ): List[String] = {
+    val response = search(index, typ, key)
+    val responses = if (scroll) scrollResponse(response) else Stream(response)
+    responses
       .map(SearchFormatter.idFormatter.rawFormatResponse)
       .takeWhile(_.nonEmpty)
       .toList
       .flatten
-  }
-
-  def searchAsString(
-    formatter: SearchFormatter, index: String, typ: String, key: String
-  ): Either[String, String] = {
-    val response = search(index, typ, key)
-    formatter.formatResponse(response)
-  }
-
-  def searchAsIds(
-    index: String, typ: String, key: String
-  ): List[String] = {
-    val response = search(index, typ, key)
-    SearchFormatter.idFormatter.rawFormatResponse(response)
   }
 
   @throws(classOf[IOException])

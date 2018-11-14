@@ -34,18 +34,15 @@ class PortalSearcher(
       .flatten
   }
 
-  override def scrollSearchAsIds(
-    index: String, typ: String, key: String
-  ): List[String] = searchAsIds(index, typ, key)
-
   override def searchAsIds(
-    index: String, typ: String, key: String
+    scroll: Boolean, index: String, typ: String, key: String
   ): List[String] = {
     _search(key).map(_.id).toList
   }
 
   override def searchAsString(
-    formatter: SearchFormatter, index: String, typ: String, key: String
+    formatter: SearchFormatter, scroll: Boolean,
+    index: String, typ: String, key: String
   ): Either[String, String] = {
     val res = _search(key)
     Right(s"${res.mkString("\n")}\n${res.length}")
