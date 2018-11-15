@@ -20,6 +20,7 @@ object Main {
         try {
           val ids = searcher.searchAsIds(true, index, typ, key)
           val scorer = new Scorer(label)
+          println(scorer.analyze(key, ids))
           for (mod <- ScoreMode.mods) {
             val res = scorer.scoreFor(key, ids, mod)
             println(s"${mod.name}\n$res")
