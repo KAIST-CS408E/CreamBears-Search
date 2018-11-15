@@ -21,6 +21,7 @@ class AllSearcher(
       .source(
         new SearchSourceBuilder()
           .query(QueryBuilders.matchAllQuery)
+          .explain(true)
           .size(100)
       )
       .scroll("60m")

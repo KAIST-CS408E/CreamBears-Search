@@ -39,11 +39,20 @@ object Main {
         } finally {
           searcher.close()
         }
+    case "--scroll" :: index :: name :: key :: fileOpt =>
+      for (searcher <- getSearcher(name))
+        try {
+          val formatter = getFormatter
+          val res = trySearch(searcher, formatter, true, index, typ, key)
+          res.fold(System.err.println, printResult(_, fileOpt))
+        } finally {
+          searcher.close()
+        }
     case index :: name :: key :: fileOpt =>
       for (searcher <- getSearcher(name))
         try {
           val formatter = getFormatter
-          val res = trySearch(searcher, formatter, index, typ, key)
+          val res = trySearch(searcher, formatter, false, index, typ, key)
           res.fold(System.err.println, printResult(_, fileOpt))
         } finally {
           searcher.close()
@@ -75,11 +84,11 @@ object Main {
     }
 
   private def trySearch(
-    searcher: Searcher, formatter: SearchFormatter,
+    searcher: Searcher, formatter: SearchFormatter, scroll: Boolean,
     index: String, typ: String, key: String
   ): Either[String, String] =
     try {
-      searcher.searchAsString(formatter, false, index, typ, key)
+      searcher.searchAsString(formatter, scroll, index, typ, key)
     } catch {
       case e: Exception => Left(e.getMessage)
     }
