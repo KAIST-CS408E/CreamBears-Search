@@ -1,6 +1,7 @@
 package services.xis.search
 
 import scala.io.Source
+import Console.{BLUE, CYAN, GREEN, RED, RESET}
 
 import java.io.{FileOutputStream, IOException}
 
@@ -18,12 +19,22 @@ object Main {
     case "--score" :: label :: index :: name :: key :: fileOpt =>
       for (searcher <- getSearcher(name)) 
         try {
+          val portal = getSearcher("PortalSearcher").get
+          val pids = portal.searchAsIds(true, index, typ, key)
+          portal.close()
+
           val ids = searcher.searchAsIds(true, index, typ, key)
           val scorer = new Scorer(label)
           println(scorer.analyze(key, ids))
+          println(s"$BLUE[SCORES]$RESET")
           for (mod <- ScoreMode.mods) {
             val res = scorer.scoreFor(key, ids, mod)
-            println(s"${mod.name}\n$res")
+            val pres = scorer.scoreFor(key, pids, mod)
+            print(s"$CYAN[${mod.name.take(5).toUpperCase}]$RESET")
+            val sym = if (res > pres) ">" else if (res == pres) "=" else "<"
+            val color =
+              if (res > pres) GREEN else if (res == pres) RESET else RED
+            println(f" $color$res%.5f $sym $pres%.5f$RESET")
           }
         } finally {
           searcher.close()
