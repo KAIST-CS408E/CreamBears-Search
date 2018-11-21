@@ -23,6 +23,8 @@ object Api {
     val getter = getSearcher("Getter").get
     val res = ids
       .map(getter.searchAsString(SearchFormatter.html, false, index, typ, _).merge)
+      .zipWithIndex
+      .map{ case (s, i) => s.replace("REPLACEREPLACE", i.toString) }
       .mkString("\n")
     getter.close()
     res
