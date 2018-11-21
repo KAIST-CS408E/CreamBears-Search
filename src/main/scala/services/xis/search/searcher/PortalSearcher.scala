@@ -42,7 +42,7 @@ class PortalSearcher(
     lazy val pages: Stream[Int] = 1 #:: pages.map(_ + 1)
     login
     pages
-      .map(SearchUtil.search(key, start, end, _))
+      .map(SearchUtil.search(key, _))
       .takeWhile(_.nonEmpty)
       .flatten
       .filter(a => boards(a.board))

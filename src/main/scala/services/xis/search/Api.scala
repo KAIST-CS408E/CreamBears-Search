@@ -19,7 +19,7 @@ object Api {
         None
     }
 
-  def idsToHtml(ids: List[String], index: String, typ: String, key: String): String = {
+  def idsToHtml(ids: List[String], index: String, typ: String): String = {
     val getter = getSearcher("Getter").get
     val res = ids
       .map(getter.searchAsString(SearchFormatter.html, false, index, typ, _).merge)
