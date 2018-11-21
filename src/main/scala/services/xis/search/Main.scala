@@ -16,7 +16,34 @@ object Main {
       |       run --score [label] [index] [class] [keyword]""".stripMargin
 
   def main(args: Array[String]): Unit = args.toList match {
-    case "--allscore" :: label :: index :: name :: fileOpt =>
+    case "--show" :: label :: index :: Nil =>
+      val opts = List(
+//        ("", "Const"),
+        ("TitleContent", "AllFields"),
+        ("", "Synonym"),
+        ("", "Hits")
+      )
+      val names = (List("Searcher") /: opts){ case (names, (default, adv)) =>
+        names.map(default + _) ++ names.map(adv + _)
+      }
+      val scorer = new Scorer(label)
+      val keywords = scorer.keywords.toList
+      val mod = ScoreMode.findMode("AveragePrecision")
+      val cmod = CombineMode.findMode("ArithmeticMean")
+      for (name     <- names;
+           searcher <- getSearcher(name)) {
+        val map = keywords.map(key =>
+          key -> searcher.searchAsIds(true, index, typ, key)
+        ).toMap
+        searcher.close()
+
+        println(name)
+        println(
+          keywords.map(key => scorer.scoreFor(key, map(key), mod))
+            .map(score => f"$score%.5f").mkString("\t"))
+        println(scorer.scoreAll(map, mod, cmod))
+      }
+    case "--allscore" :: label :: index :: name :: Nil =>
       for (searcher <- getSearcher(name)) 
         try {
           val scorer = new Scorer(label)
@@ -52,7 +79,7 @@ object Main {
           searcher.close()
         }
 
-    case "--score" :: label :: index :: name :: key :: fileOpt =>
+    case "--score" :: label :: index :: name :: key :: Nil =>
       for (searcher <- getSearcher(name)) 
         try {
           val portal = getSearcher("PortalSearcher").get
