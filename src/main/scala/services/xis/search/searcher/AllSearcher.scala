@@ -15,6 +15,9 @@ class AllSearcher(
   port1: java.lang.Integer,
   protocol: String
 ) extends Searcher(host, port0, port1, protocol) {
+  def searchPage(index: String, typ: String, key: String, page: Int): SearchResponse =
+    search(index, typ, key)
+
   def search(index: String, typ: String, key: String): SearchResponse = {
     val request = new SearchRequest(index)
       .types(typ)

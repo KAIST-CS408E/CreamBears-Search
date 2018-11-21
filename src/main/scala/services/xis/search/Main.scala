@@ -34,7 +34,7 @@ object Main {
       val mod = ScoreMode.findMode("AveragePrecision")
       val cmod = CombineMode.findMode("ArithmeticMean")
       for (name     <- names;
-           searcher <- getSearcher(name)) {
+           searcher <- Api.getSearcher(name)) {
         val map = keywords.map(key =>
           key -> searcher.searchAsIds(true, index, typ, key)
         ).toMap
@@ -47,12 +47,12 @@ object Main {
         println(scorer.scoreAll(map, mod, cmod))
       }
     case "--allscore" :: label :: index :: name :: Nil =>
-      for (searcher <- getSearcher(name)) 
+      for (searcher <- Api.getSearcher(name)) 
         try {
           val scorer = new Scorer(label)
           val keywords = scorer.keywords.toList
 
-          val portal = getSearcher("PortalSearcher").get
+          val portal = Api.getSearcher("PortalSearcher").get
           val pmap = keywords.map(key =>
             key -> portal.searchAsIds(true, index, typ, key)
           ).toMap
@@ -83,9 +83,9 @@ object Main {
         }
 
     case "--score" :: label :: index :: name :: key :: Nil =>
-      for (searcher <- getSearcher(name)) 
+      for (searcher <- Api.getSearcher(name)) 
         try {
-          val portal = getSearcher("PortalSearcher").get
+          val portal = Api.getSearcher("PortalSearcher").get
           val pids = portal.searchAsIds(true, index, typ, key)
           portal.close()
 
@@ -106,7 +106,7 @@ object Main {
           searcher.close()
         }
     case "--scroll" :: index :: name :: key :: fileOpt =>
-      for (searcher <- getSearcher(name))
+      for (searcher <- Api.getSearcher(name))
         try {
           val formatter = getFormatter
           val res = trySearch(searcher, formatter, true, index, typ, key)
@@ -115,7 +115,7 @@ object Main {
           searcher.close()
         }
     case index :: name :: key :: fileOpt =>
-      for (searcher <- getSearcher(name))
+      for (searcher <- Api.getSearcher(name))
         try {
           val formatter = getFormatter
           val res = trySearch(searcher, formatter, false, index, typ, key)
@@ -125,22 +125,6 @@ object Main {
         }
     case _ => println(help)
   }
-
-  private def getSearcher(name: String): Option[Searcher] =
-    try {
-      val params =
-        List("localhost", new Integer(9200), new Integer(9300), "http")
-      val packageName = this.getClass.getPackage.getName
-      val subPackageName = "searcher"
-      val c = Class.forName(s"$packageName.$subPackageName.$name")
-        .asInstanceOf[Class[Searcher]]
-      val cons = c.getConstructor(params.map(_.getClass): _*)
-      Some(cons.newInstance(params: _*))
-    } catch {
-      case _: ClassNotFoundException =>
-        System.err.println(s"Class not found: $name")
-        None
-    }
 
   private def getFormatter: SearchFormatter =
     try {

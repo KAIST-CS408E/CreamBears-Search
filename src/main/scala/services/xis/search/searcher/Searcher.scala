@@ -59,6 +59,16 @@ abstract class Searcher(
       .flatten
   }
 
+  def searchPageAsIds(
+    index: String, typ: String, key: String, page: Int
+  ): List[String] =
+    SearchFormatter.idFormatter.rawFormatResponse(
+      searchPage(index, typ, key, page)
+    )
+
+  @throws(classOf[IOException])
+  def searchPage(index: String, typ: String, key: String, page: Int): SearchResponse
+
   @throws(classOf[IOException])
   def search(index: String, typ: String, key: String): SearchResponse
 }

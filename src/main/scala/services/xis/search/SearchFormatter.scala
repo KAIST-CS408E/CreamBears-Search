@@ -109,4 +109,7 @@ Attach: \a80
 \E
 """)
   val idFormatter = new SearchFormatter("\\I")
+  val html = new SearchFormatter(
+"""<div class="card"><div class="card-body"><a href="https://portal.kaist.ac.kr/ennotice/\B/\I" target="_blank" onclick="read(event)">\T</a><p>\c100</p></div></div>"""
+  )
 }

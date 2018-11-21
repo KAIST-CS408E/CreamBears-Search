@@ -35,6 +35,26 @@ class PortalSearcher(
   private val start = "20180801"
   private val end = "20181031"
 
+  override def searchPageAsIds(
+    index: String, typ: String, key: String, page: Int
+  ): List[String] = {
+    implicit val cookie: Cookie = MMap()
+    lazy val pages: Stream[Int] = 1 #:: pages.map(_ + 1)
+    login
+    pages
+      .map(SearchUtil.search(key, start, end, _))
+      .takeWhile(_.nonEmpty)
+      .flatten
+      .filter(a => boards(a.board))
+      .drop((page - 1) * 15)
+      .take(15)
+      .toList
+      .map(_.id)
+  }
+
+  def searchPage(index: String, typ: String, key: String, page: Int): SearchResponse =
+    throw ShouldNotBeCalledException
+
   private def _search(key: String): Stream[SearchResult] = {
     implicit val cookie: Cookie = MMap()
     lazy val pages: Stream[Int] = 1 #:: pages.map(_ + 1)

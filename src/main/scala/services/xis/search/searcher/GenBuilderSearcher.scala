@@ -14,6 +14,18 @@ abstract class GenBuilderSearcher(
 ) extends Searcher(
   host, port0, port1, protocol
 ) {
+  def searchPage(index: String, typ: String, key: String, page: Int): SearchResponse = {
+    val request = new SearchRequest(index)
+      .types(typ)
+      .source(
+        new SearchSourceBuilder()
+          .from(15 * (page - 1))
+          .size(15)
+          .explain(true)
+          .query(builder(key))
+      )
+    client.search(request, RequestOptions.DEFAULT)
+  }
   def search(index: String, typ: String, key: String): SearchResponse = {
     val request = new SearchRequest(index)
       .types(typ)
