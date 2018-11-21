@@ -11,7 +11,7 @@ class Scorer(name: String) {
         val i = url.lastIndexOf("/")
         url.substring(i + 1).filter(_.isDigit)
       }
-      val data = Source.fromFile(name).mkString.split("\n").map(_.split(","))
+      val data = Source.fromFile(name).mkString.filter(_ <= 0xd800).split("\n").map(_.split(","))
       val keywords = data.head.init
       val articles = data.tail
       val relevants =

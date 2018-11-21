@@ -21,11 +21,14 @@ object Main {
 //        ("", "Const"),
         ("TitleContent", "AllFields"),
         ("", "Synonym"),
-        ("", "Hits")
+        ("", "Hits"),
+        ("", "Date")
       )
-      val names = (List("Searcher") /: opts){ case (names, (default, adv)) =>
-        names.map(default + _) ++ names.map(adv + _)
-      }
+      val names = "PortalSearcher" ::
+        (List("Searcher") /: opts){ case (names, (default, adv)) =>
+          names.map(default + _) ++ names.map(adv + _)
+        }
+//val names = List[String]()
       val scorer = new Scorer(label)
       val keywords = scorer.keywords.toList
       val mod = ScoreMode.findMode("AveragePrecision")

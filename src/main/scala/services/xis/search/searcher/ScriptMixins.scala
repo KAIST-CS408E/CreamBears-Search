@@ -24,7 +24,7 @@ trait DateMixin extends GenBuilderSearcher {
   abstract override def builder(key: String): QueryBuilder =
     new FunctionScoreQueryBuilder(super.builder(key),
       ScoreFunctionBuilders.gaussDecayFunction(
-        "time", new Date, "100d",
+        "time", new Date, "365d",
       ))
       .boostMode(CombineFunction.MULTIPLY)
       .scoreMode(FunctionScoreQuery.ScoreMode.SUM)
