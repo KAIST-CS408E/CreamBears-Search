@@ -58,6 +58,14 @@ class SynonymAllFieldsSearcher(
        (new SynonymAttachedSearcher(host, port0, port1, protocol), .2f))
 )
 
+class TitleContentConstSearcher(
+  host: String, port0: Integer, port1: Integer, protocol: String,
+) extends CombinedSearcher(
+  host, port0, port1, protocol,
+  List((new ConstBaseTitleSearcher(host, port0, port1, protocol), 10f),
+       (new ConstBaseContentSearcher(host, port0, port1, protocol), 5f))
+)
+
 class AllFieldsConstSearcher(
   host: String, port0: Integer, port1: Integer, protocol: String,
 ) extends CombinedSearcher(
@@ -66,4 +74,22 @@ class AllFieldsConstSearcher(
        (new ConstBaseContentSearcher(host, port0, port1, protocol), 5f),
        (new ConstBaseImageSearcher(host, port0, port1, protocol), 2.5f),
        (new ConstBaseAttachedSearcher(host, port0, port1, protocol), 1f))
+)
+
+class SynonymTitleContentConstSearcher(
+  host: String, port0: Integer, port1: Integer, protocol: String,
+) extends CombinedSearcher(
+  host, port0, port1, protocol,
+  List((new SynonymConstBaseTitleSearcher(host, port0, port1, protocol), 10f),
+       (new SynonymConstBaseContentSearcher(host, port0, port1, protocol), 5f))
+)
+
+class SynonymAllFieldsConstSearcher(
+  host: String, port0: Integer, port1: Integer, protocol: String,
+) extends CombinedSearcher(
+  host, port0, port1, protocol,
+  List((new SynonymConstBaseTitleSearcher(host, port0, port1, protocol), 10f),
+       (new SynonymConstBaseContentSearcher(host, port0, port1, protocol), 5f),
+       (new SynonymConstBaseImageSearcher(host, port0, port1, protocol), 2.5f),
+       (new SynonymConstBaseAttachedSearcher(host, port0, port1, protocol), 1f))
 )
