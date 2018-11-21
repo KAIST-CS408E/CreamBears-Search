@@ -20,7 +20,7 @@ trait HitsMixin extends GenBuilderSearcher {
       .scoreMode(FunctionScoreQuery.ScoreMode.SUM)
 }
 
-trait DateMixin extends TextSearcher {
+trait DateMixin extends GenBuilderSearcher {
   abstract override def builder(key: String): QueryBuilder =
     new FunctionScoreQueryBuilder(super.builder(key),
       ScoreFunctionBuilders.gaussDecayFunction(
