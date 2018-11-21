@@ -6,7 +6,7 @@ import Console.{BLUE, CYAN, GREEN, RED, RESET}
 import java.io.{FileOutputStream, IOException}
 
 import services.xis.search.searcher.Searcher
-import services.xis.search.score.{Scorer, ScoreMode}
+import services.xis.search.score.{Scorer, ScoreMode, CombineMode}
 
 object Main {
 
@@ -16,6 +16,42 @@ object Main {
       |       run --score [label] [index] [class] [keyword]""".stripMargin
 
   def main(args: Array[String]): Unit = args.toList match {
+    case "--allscore" :: label :: index :: name :: fileOpt =>
+      for (searcher <- getSearcher(name)) 
+        try {
+          val scorer = new Scorer(label)
+          val keywords = scorer.keywords.toList
+
+          val portal = getSearcher("PortalSearcher").get
+          val pmap = keywords.map(key =>
+            key -> portal.searchAsIds(true, index, typ, key)
+          ).toMap
+          portal.close()
+
+          val map = keywords.map(key =>
+            key -> searcher.searchAsIds(true, index, typ, key)
+          ).toMap
+
+          println(keywords.map(_.take(3)).mkString("\t"))
+          for (mod  <- ScoreMode.mods) {
+            println(s"$CYAN[${mod.name.take(5).toUpperCase}]$RESET")
+            println(
+              keywords.map(key => scorer.scoreFor(key, map(key), mod))
+                .map(score => f"$score%.5f").mkString("\t"))
+            for (cmod <- CombineMode.mods) {
+              val res = scorer.scoreAll(map, mod, cmod)
+              val pres = scorer.scoreAll(pmap, mod, cmod)
+              print(s"  $CYAN[${(cmod.name + "  ").take(5).toUpperCase}]$RESET")
+              val sym = if (res > pres) ">" else if (res == pres) "=" else "<"
+              val color =
+                if (res > pres) GREEN else if (res == pres) RESET else RED
+              println(f" $color$res%.5f $sym $pres%.5f$RESET")
+            }
+          }
+        } finally {
+          searcher.close()
+        }
+
     case "--score" :: label :: index :: name :: key :: fileOpt =>
       for (searcher <- getSearcher(name)) 
         try {
