@@ -57,3 +57,13 @@ class SynonymAllFieldsSearcher(
        (new SynonymImageSearcher(host, port0, port1, protocol), .5f),
        (new SynonymAttachedSearcher(host, port0, port1, protocol), .2f))
 )
+
+class AllFieldsConstSearcher(
+  host: String, port0: Integer, port1: Integer, protocol: String,
+) extends CombinedSearcher(
+  host, port0, port1, protocol,
+  List((new ConstBaseTitleSearcher(host, port0, port1, protocol), 10f),
+       (new ConstBaseContentSearcher(host, port0, port1, protocol), 5f),
+       (new ConstBaseImageSearcher(host, port0, port1, protocol), 2.5f),
+       (new ConstBaseAttachedSearcher(host, port0, port1, protocol), 1f))
+)
